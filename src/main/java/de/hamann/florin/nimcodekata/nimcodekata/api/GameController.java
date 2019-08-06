@@ -15,9 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import de.hamann.florin.nimcodekata.nimcodekata.model.Game;
 import de.hamann.florin.nimcodekata.nimcodekata.model.GameAction;
 import de.hamann.florin.nimcodekata.nimcodekata.service.GameProviderService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/api/v1/nim/")
+@Api(value = "Nim-Game Crud System", consumes = "application/json", produces = "application/json")
 public class GameController {
 
 	@Autowired
@@ -28,22 +33,27 @@ public class GameController {
 //		return gameProviderService.findAll();
 //	}
 
-	@PostMapping("/post")
+	@ApiOperation(value = "create and save new init game to jpa repositry", response = Game.class)
+	@ApiResponses(@ApiResponse(code = 200, message = "OK"))
+	@PostMapping(value = "/post")
 	Game newGame(@Valid @RequestBody Game newGame) {
 		return gameProviderService.createAndSaveNewGame(newGame);
 	}
 
 	@GetMapping("/get/{id}")
-	Game one(@PathVariable Long id) {
+	@ApiOperation(value = "find and search stored game by given id", response = Game.class)
+	Game find(@PathVariable Long id) {
 		return gameProviderService.findGameById(id);
 	}
 
 	@PutMapping("/play/{id}")
+	@ApiOperation(value = "find, search and update stored game by given gameAction", response = Game.class)
 	Game playMove(@RequestBody GameAction gameAction, @PathVariable Long id) {
 		return gameProviderService.playMove(gameAction, id);
 	}
 
 	@DeleteMapping("/delete/{id}")
+	@ApiOperation(value = "find and delete stored game by given id", response = void.class)
 	void deletGame(@RequestBody Game deletGame, @PathVariable Long id) {
 		gameProviderService.deleteGameId(id);
 	}
