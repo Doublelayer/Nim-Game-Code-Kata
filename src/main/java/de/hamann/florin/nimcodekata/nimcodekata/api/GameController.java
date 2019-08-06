@@ -39,9 +39,8 @@ public class GameController {
 	}
 
 	@PutMapping("/play/{id}")
-	Game playMove(@RequestBody(required = true) GameAction gameAction, @PathVariable Long id) {
+	Game playMove(@RequestBody GameAction gameAction, @PathVariable Long id) {
 		return gameProviderService.playMove(gameAction, id);
-
 	}
 
 	@DeleteMapping("/delete/{id}")

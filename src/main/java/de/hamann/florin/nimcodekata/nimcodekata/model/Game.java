@@ -24,13 +24,13 @@ public class Game {
 
 	@NotNull(message = "Count of Figures are mendatory!")
 	@Min(value = 3, message = "Count of Figures have to be in range of 3 to 13")
-	@Max(value = 13)
+	@Max(value = 99999)
 	private int figuresCount;
 
-	@NotNull(message = "Variation of Game is mendatory!")
-	@Min(value = 1, message = "Variation of Game has to be in range of 1 to 3")
-	@Max(value = 3)
-	private int gameVariation;
+	@NotNull(message = "GameEngine is mendatory!")
+	@Min(value = 1, message = "GameEngine has to be in range of 1 to 2")
+	@Max(value = 2)
+	private int gameEngine;
 
 	private GameState gameState;
 
@@ -50,12 +50,12 @@ public class Game {
 		this.figuresCount = figuresCount;
 	}
 
-	public int getGameVariation() {
-		return gameVariation;
+	public int getGameEngine() {
+		return gameEngine;
 	}
 
-	public void setGameVariation(int gameVariation) {
-		this.gameVariation = gameVariation;
+	public void setGameEngine(int gameEngine) {
+		this.gameEngine = gameEngine;
 	}
 
 	public GameState getGameState() {
