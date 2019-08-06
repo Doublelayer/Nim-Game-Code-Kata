@@ -9,8 +9,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-@Entity
+import lombok.Data;
 
+@Data
+@Entity
 public class Game {
 
 	@Id
@@ -30,34 +32,42 @@ public class Game {
 	@Max(value = 3)
 	private int gameVariation;
 
-	public Game() {
-	}
-
-	public Game(String player, int figuresCount, int gameVariation) {
-		this.player = player;
-		this.figuresCount = figuresCount;
-		this.gameVariation = gameVariation;
-
-	}
+	private GameState gameState;
 
 	public String getPlayer() {
 		return player;
+	}
+
+	public void setPlayer(String player) {
+		this.player = player;
 	}
 
 	public int getFiguresCount() {
 		return figuresCount;
 	}
 
+	public void setFiguresCount(int figuresCount) {
+		this.figuresCount = figuresCount;
+	}
+
 	public int getGameVariation() {
 		return gameVariation;
 	}
 
-	public Long getGameId() {
-		return gameId;
+	public void setGameVariation(int gameVariation) {
+		this.gameVariation = gameVariation;
 	}
 
-	public void setFiguresCount(int figuresCount) {
-		this.figuresCount = figuresCount;
+	public GameState getGameState() {
+		return gameState;
+	}
+
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
+	}
+
+	public Long getGameId() {
+		return gameId;
 	}
 
 }
