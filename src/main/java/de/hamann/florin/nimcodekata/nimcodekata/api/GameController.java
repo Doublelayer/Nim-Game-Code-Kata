@@ -28,11 +28,6 @@ public class GameController {
 	@Autowired
 	private GameProviderService gameProviderService;
 
-//	@GetMapping("/get")
-//	List<Game> all() {
-//		return gameProviderService.findAll();
-//	}
-
 	@ApiOperation(value = "create and save new init game to jpa repositry", response = Game.class)
 	@ApiResponses(@ApiResponse(code = 200, message = "OK"))
 	@PostMapping(value = "/post")
@@ -48,7 +43,7 @@ public class GameController {
 
 	@PutMapping("/play/{id}")
 	@ApiOperation(value = "find, search and update stored game by given gameAction", response = Game.class)
-	Game playMove(@RequestBody GameAction gameAction, @PathVariable Long id) {
+	Game playMove(@RequestBody @Valid GameAction gameAction, @PathVariable Long id) {
 		return gameProviderService.playMove(gameAction, id);
 	}
 
