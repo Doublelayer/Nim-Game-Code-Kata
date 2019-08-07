@@ -32,8 +32,8 @@ public class GameProviderService {
 		return game;
 	}
 
-	public void deleteGameId(Long id) {
-		gameRepository.deleteById(id);
+	public void deleteGameId(Long id) throws GameNotFoundException {
+		gameRepository.deleteById(findGameById(id).getGameId());
 		LOG.info("Deleted GameID: " + id);
 	}
 
