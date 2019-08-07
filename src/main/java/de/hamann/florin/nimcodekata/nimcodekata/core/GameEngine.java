@@ -30,6 +30,8 @@ public class GameEngine {
 		default:
 			break;
 		}
+		
+		game.setGameState(EGameState.PLAYER_TURN);
 	}
 
 	private void determineWinner(Game game, EWinner winner) {
@@ -60,7 +62,11 @@ public class GameEngine {
 		}
 
 	}
-
+	
+	/*
+	 * this is a pseudo implementation of an intelligent game engine.
+	 * Feel free to contribute :-)	
+	 */
 	public void intelligentEngine(Game game) {
 		int move = ThreadLocalRandom.current().nextInt(2, 3);
 		if (move != 1 && game.getFiguresCount() > 1)
