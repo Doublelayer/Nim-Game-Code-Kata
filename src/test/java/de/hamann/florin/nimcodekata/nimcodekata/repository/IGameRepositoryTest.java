@@ -18,10 +18,10 @@ import de.hamann.florin.nimcodekata.nimcodekata.model.Game;
 @DataJpaTest
 @RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class GameRepositoryTest {
+public class IGameRepositoryTest {
 	
 	@Autowired
-    private GameRepository gameRepository;
+    private IGameRepository gameRepository;
 
 	Game game = new Game();
 	

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import de.hamann.florin.nimcodekata.nimcodekata.model.Game;
 
 @Repository
-public interface GameRepository extends JpaRepository<Game, Long> {
+public interface IGameRepository extends JpaRepository<Game, Long> {
 
 }

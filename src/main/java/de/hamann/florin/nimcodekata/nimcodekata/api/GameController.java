@@ -34,7 +34,7 @@ public class GameController {
 	@Autowired
 	private GameProviderService gameProviderService;
 
-	@ApiOperation(value = "a simple welcome screeen")
+	@ApiOperation(value = "a simple welcome message")
 	@ApiResponses(@ApiResponse(code = 200, message = "OK"))
 	@GetMapping(value = "/")
 	public String welcome() {
@@ -58,6 +58,7 @@ public class GameController {
 	@ApiOperation(value = "find and search stored game by given id", response = ResponseEntity.class)
 	Resource<Game> find(@PathVariable Long id) {
 		Game game = gameProviderService.findGameById(id);
+		
 		return new Resource<Game>(game,
 				linkTo(methodOn(GameController.class).find(game.getGameId())).withRel("_self"),
 				linkTo(methodOn(GameController.class).playMove(new GameAction(), game.getGameId())).withRel("play_move"));
@@ -68,6 +69,7 @@ public class GameController {
 	@ApiOperation(value = "find, search and update stored game by given gameAction", response = ResponseEntity.class)
 	Resource<Game> playMove(@RequestBody @Valid GameAction gameAction, @PathVariable Long id) {
 		Game game = gameProviderService.playMove(gameAction, id);
+		
 		return new Resource<>(game,
 				linkTo(methodOn(GameController.class).playMove(new GameAction(), game.getGameId())).withRel("_self"),
 				linkTo(methodOn(GameController.class).find(game.getGameId())).withRel("get_game"));
@@ -78,6 +80,7 @@ public class GameController {
 	@ApiOperation(value = "find and delete stored game by given id", response = ResponseEntity.class)
 	Resource<HttpStatus> deletGame(@PathVariable Long id) {
 		gameProviderService.deleteGameId(id);
+		
 		return new Resource<> (HttpStatus.ACCEPTED);
 	}
 

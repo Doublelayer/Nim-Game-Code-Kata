@@ -24,11 +24,11 @@ public class Game {
 	private Long gameId;
 
 	@NotEmpty(message = "Player are mendatory!")
-	@ApiModelProperty(notes = "The player name")
+	@ApiModelProperty(notes = "The player name (mendatory)")
 	private String player;
 
 	@NotNull(message = "Count of Figures are mendatory!")
-	@Min(value = 3, message = "Count of Figures have to be in range of 3 to 13")
+	@Min(value = 0, message = "Count of Figures have to be in range of 0 to 99999")
 	@Max(value = 99999)
 	@ApiModelProperty(notes = "The Count of allowed figures for the game")
 	private int figuresCount;
@@ -39,7 +39,8 @@ public class Game {
 	@ApiModelProperty(notes = "The employee first name")
 	private int gameEngine;
 
-	private GameState gameState;
+	private EGameState gameState;
+	private EWinner winner = EWinner.DRAW;
 
 	public String getPlayer() {
 		return player;
@@ -65,16 +66,25 @@ public class Game {
 		this.gameEngine = gameEngine;
 	}
 
-	public GameState getGameState() {
+	public EGameState getGameState() {
 		return gameState;
 	}
 
-	public void setGameState(GameState gameState) {
+	public void setGameState(EGameState gameState) {
 		this.gameState = gameState;
 	}
 
 	public Long getGameId() {
 		return gameId;
 	}
+
+	public EWinner getWinner() {
+		return winner;
+	}
+
+	public void setWinner(EWinner winner) {
+		this.winner = winner;
+	}
+	
 
 }
