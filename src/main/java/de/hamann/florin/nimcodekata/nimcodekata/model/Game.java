@@ -36,7 +36,7 @@ public class Game {
 	@NotNull(message = "GameEngine is mendatory!")
 	@Min(value = 1, message = "GameEngine has to be in range of 1 to 2")
 	@Max(value = 2)
-	@ApiModelProperty(notes = "The employee first name")
+	@ApiModelProperty(notes = "GameEngine: Select '1' for the normal Version (no intelligent cpu) | Select '2' for the intelligent Version (intelligent cpu)")
 	private int gameEngine;
 
 	private EGameState gameState;

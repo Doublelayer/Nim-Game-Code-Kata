@@ -17,17 +17,18 @@ public class GameEngine {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GameProviderService.class);
 
-	public int setCpuMove(Game game) {
-
+	public void setCpuMove(Game game) {
 		switch (game.getGameEngine()) {
 		case 1:
 			normalEngine(game);
 			determineWinner(game, EWinner.CPU);
+			break;
 		case 2:
-			intelligentEngine();
+			intelligentEngine(game);
 			determineWinner(game, EWinner.CPU);
+			break;
 		default:
-			return 0;
+			break;
 		}
 	}
 
@@ -60,9 +61,14 @@ public class GameEngine {
 
 	}
 
-	public int intelligentEngine() {
-		return 0;
-
+	public void intelligentEngine(Game game) {
+		int move = ThreadLocalRandom.current().nextInt(2, 3);
+		if (move != 1 && game.getFiguresCount() > 1)
+			game.setFiguresCount(game.getFiguresCount() - move - 1);
+		else
+			game.setFiguresCount(game.getFiguresCount() - 1);
+		
+		LOG.info("CPU reduce by {}. New FiguresCount: {}.", move, game.getFiguresCount());
 	}
 
 }

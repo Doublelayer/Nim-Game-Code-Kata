@@ -54,7 +54,7 @@ public class GameProviderService {
 		
 		gameEngine.setPlayerMove(gameFound, playerMove);
 		
-		if (gameFound.getGameState() == EGameState.END)
+		if (gameFound.getGameState() != EGameState.END)
 			gameEngine.setCpuMove(gameFound);	
 
 		return gameRepository.save(gameFound);
