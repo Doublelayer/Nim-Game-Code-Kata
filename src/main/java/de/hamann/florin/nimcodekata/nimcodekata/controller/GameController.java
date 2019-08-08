@@ -1,4 +1,4 @@
-package de.hamann.florin.nimcodekata.nimcodekata.api;
+package de.hamann.florin.nimcodekata.nimcodekata.controller;
 
 import javax.validation.Valid;
 

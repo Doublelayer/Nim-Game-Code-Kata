@@ -26,3 +26,9 @@
 > http://localhost:8080/swagger-ui.html
 
 There you can test and read the api documentation.
+
+# Todos
+
+- [ ] User authentication
+- [ ] Request Fallback configuration
+- [ ] Implement intelligent GameEngine
