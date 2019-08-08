@@ -14,12 +14,12 @@ import io.swagger.annotations.ApiModelProperty;
 
 
 @Entity
-@ApiModel(description = "All details about the Employee. ")
+@ApiModel(description = "All details about the Game. ")
 public class Game {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@ApiModelProperty(notes = "The database generated employee ID")
+	@ApiModelProperty(notes = "The database generated game ID")
 	private Long gameId;
 
 	@NotEmpty(message = "Player are mendatory!")
