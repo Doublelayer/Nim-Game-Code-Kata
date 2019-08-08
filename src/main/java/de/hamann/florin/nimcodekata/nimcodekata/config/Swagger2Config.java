@@ -30,6 +30,7 @@ public class Swagger2Config {
 				.description("REST API documentation for playing the NIM-Game")
 				.license("License under Holistikönner???")
 				.licenseUrl("http://www.hire-me.de")
-				.version("1.0.0").build();
+				.version("1.0.0")
+				.build();
 	}
 }
