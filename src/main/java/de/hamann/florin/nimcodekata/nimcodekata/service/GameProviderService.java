@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import de.hamann.florin.nimcodekata.nimcodekata.core.GameEngine;
+import de.hamann.florin.nimcodekata.nimcodekata.core.IGameEngine;
+import de.hamann.florin.nimcodekata.nimcodekata.core.IntelligentEngine;
+import de.hamann.florin.nimcodekata.nimcodekata.core.NormalEngine;
 import de.hamann.florin.nimcodekata.nimcodekata.exception.GameNotFoundException;
 import de.hamann.florin.nimcodekata.nimcodekata.model.EGameState;
 import de.hamann.florin.nimcodekata.nimcodekata.model.Game;
@@ -23,14 +25,19 @@ public class GameProviderService {
 
 	@Autowired
 	private IGameRepository gameRepository;
-	@Autowired
-	private GameEngine gameEngine;
+	private IGameEngine gameEngine;
 
 	public Game createAndSaveNewGame(Game newGame) {
 		newGame.setGameState(EGameState.PLAYER_TURN);
 		newGame.setGameEngine(newGame.getGameEngine());
 		Game game = gameRepository.save(newGame);
-		LOG.info("User: " + game.getPlayer() + " has created new game with ID: " + game.getGameId());
+
+		if (newGame.getGameEngine() == 1)
+			setEngine(new NormalEngine());
+		if (newGame.getGameEngine() == 2)
+			setEngine(new IntelligentEngine());
+
+		LOG.info("User: {} has created new Game with ID: {} and with {}", game.getPlayer(), game.getGameId(), gameEngine.getEngineName());
 		return game;
 	}
 
@@ -43,23 +50,29 @@ public class GameProviderService {
 		return gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
 	}
 
-	public Game playMove(GameAction playerMove, Long id) throws GameNotFoundException {
+	public Game playMove(GameAction playerMove, Long id) throws GameNotFoundException, ResponseStatusException {
 		Game gameFound = findGameById(id);
-		
-		if(gameFound.getFiguresCount() < playerMove.getActionCount()) 
+
+		if (gameFound.getFiguresCount() < playerMove.getActionCount())
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ActionCount is bigger then present figuresCount");
-		
+
 		if (gameFound.getGameState() == EGameState.END)
 			return gameFound;
-		
+
 		gameEngine.setPlayerMove(gameFound, playerMove);
-		
+
 		if (gameFound.getGameState() != EGameState.END)
-			gameEngine.setCpuMove(gameFound);	
+			gameEngine.setCpuMove(gameFound);
 
 		return gameRepository.save(gameFound);
 
 	}
 
+	public IGameEngine getEngine() {
+		return gameEngine;
+	}
 
+	public void setEngine(IGameEngine engine) {
+		this.gameEngine = engine;
+	}
 }

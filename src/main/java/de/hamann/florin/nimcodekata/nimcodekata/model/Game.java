@@ -9,13 +9,17 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 
 @Entity
 @ApiModel(description = "All details about the Game. ")
 public class Game {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(Game.class);
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +44,24 @@ public class Game {
 
 	private EGameState gameState;
 	private EWinner winner = EWinner.DRAW;
+
+	public void togglePlayer() {
+		if (this.getGameState() == EGameState.PLAYER_TURN)
+			this.setGameState(EGameState.CPU_TURN);
+		else
+			this.setGameState(EGameState.PLAYER_TURN);
+		
+		LOG.info("Wait for next {}", this.getGameState());
+	}
+
+	public void setOpponentAsWinner() {
+		if (this.getGameState() == EGameState.PLAYER_TURN)
+			this.setWinner(EWinner.CPU);
+		else
+			this.setWinner(EWinner.PLAYER);
+		
+		LOG.info("{} has won the Game!", this.getWinner());
+	}
 
 	public String getPlayer() {
 		return player;
@@ -84,6 +106,6 @@ public class Game {
 	public void setWinner(EWinner winner) {
 		this.winner = winner;
 	}
-	
+
 
 }
