@@ -43,7 +43,7 @@ public class Game {
 	private int gameEngine;
 
 	private EGameState gameState;
-	private EWinner winner = EWinner.DRAW;
+	private EWinner winner = EWinner.NOBODY;
 
 	public void togglePlayer() {
 		if (this.getGameState() == EGameState.PLAYER_TURN)
