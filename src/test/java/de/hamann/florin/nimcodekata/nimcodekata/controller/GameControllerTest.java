@@ -3,10 +3,12 @@ package de.hamann.florin.nimcodekata.nimcodekata.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
+
 import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,10 +16,17 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import de.hamann.florin.nimcodekata.nimcodekata.controller.GameController;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import de.hamann.florin.nimcodekata.nimcodekata.model.EGameState;
+import de.hamann.florin.nimcodekata.nimcodekata.model.EWinner;
+import de.hamann.florin.nimcodekata.nimcodekata.model.Game;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -30,7 +39,9 @@ public class GameControllerTest {
 	private final String FIGURES_COUNT = "13";
 
 	private final String JSON_NEW_GAME = "{\"player\":\"" + PLAYER + "\",\"gameEngine\":\"" + GAME_ENGINE + "\",\"figuresCount\":\"" + FIGURES_COUNT + "\"}";
-	private final String JSON_PLAY_GAME_WITH_VALID_ACTION_COUNT =  "{\"actionCount\":\"1\"}";
+	private final String JSON_NEW_GAME_FIGURES_COUNT_2 = "{\"player\":\"" + PLAYER + "\",\"gameEngine\":\"" + GAME_ENGINE + "\",\"figuresCount\":\"" + 2 + "\"}";
+	private final String JSON_PLAY_GAME_WITH_ACTION_COUNT_1 =  "{\"actionCount\":\"1\"}";
+	private final String JSON_PLAY_GAME_WITH_ACTION_COUNT_2 =  "{\"actionCount\":\"2\"}";
 	private final String JSON_PLAY_GAME_WITH_TO_HIGHT_ACTION_COUNT =  "{\"actionCount\":\"4\"}";
 	private final String JSON_PLAY_GAME_WITH_TO_LOW_ACTION_COUNT =  "{\"actionCount\":\"0\"}";
 
@@ -39,6 +50,9 @@ public class GameControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Test
 	public void contexLoads() throws Exception {
@@ -65,7 +79,7 @@ public class GameControllerTest {
 	{
 	  mockMvc.perform( MockMvcRequestBuilders
 		      .put(BASE_URL  + "/play/{id}", 1)
-		      .content(JSON_PLAY_GAME_WITH_VALID_ACTION_COUNT)
+		      .content(JSON_PLAY_GAME_WITH_ACTION_COUNT_1)
 		      .contentType(MediaType.APPLICATION_JSON)
 		      .accept(MediaType.APPLICATION_JSON))
 			  .andExpect(MockMvcResultMatchers.jsonPath("$.gameId").value("1"))
@@ -76,7 +90,53 @@ public class GameControllerTest {
 	}
 	
 	@Test
-	public void test_3_playMoveWithGameIDAndWithToHighActionCountShouldReturnBadRequestStatus() throws Exception
+	public void test_3_gameMoveShouldSetThePlayerAsWinnerAndGameStateToEndAccordingToDefinedGameRules() throws Exception
+	{	
+		Game newGame  =  getMappedGameObject(
+				mockMvc.perform(MockMvcRequestBuilders
+				.post(BASE_URL + "/post")
+				.content(JSON_NEW_GAME_FIGURES_COUNT_2)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+		  		.andReturn());
+				
+		Game updatedGame  =  getMappedGameObject(
+				mockMvc.perform( MockMvcRequestBuilders
+			    .put(BASE_URL  + "/play/{id}", newGame.getGameId())
+			    .content(JSON_PLAY_GAME_WITH_ACTION_COUNT_1)
+			    .contentType(MediaType.APPLICATION_JSON)
+			    .accept(MediaType.APPLICATION_JSON))
+		  		.andReturn());
+
+		assertThat(updatedGame.getWinner()).isEqualTo(EWinner.PLAYER);
+		assertThat(updatedGame.getGameState()).isEqualTo(EGameState.END);
+	}
+	
+	@Test
+	public void test_4_gameMoveShouldSetTheCPUAsWinnerAndGameStateToEndAccordingToDefinedGameRules() throws Exception
+	{
+		Game newGame  =  getMappedGameObject(
+				mockMvc.perform(MockMvcRequestBuilders
+				.post(BASE_URL + "/post")
+				.content(JSON_NEW_GAME_FIGURES_COUNT_2)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+		  		.andReturn());
+				
+		Game updatedGame  =  getMappedGameObject(
+				mockMvc.perform( MockMvcRequestBuilders
+			    .put(BASE_URL  + "/play/{id}", newGame.getGameId())
+			    .content(JSON_PLAY_GAME_WITH_ACTION_COUNT_2)
+			    .contentType(MediaType.APPLICATION_JSON)
+			    .accept(MediaType.APPLICATION_JSON))
+		  		.andReturn());
+
+		assertThat(updatedGame.getWinner()).isEqualTo(EWinner.CPU);
+		assertThat(updatedGame.getGameState()).isEqualTo(EGameState.END);
+	}
+
+	@Test
+	public void test_5_playMoveWithGameIDAndWithToHighActionCountShouldReturnBadRequestStatus() throws Exception
 	{
 	  mockMvc.perform( MockMvcRequestBuilders
 		      .put(BASE_URL  + "/play/{id}", 1)
@@ -87,7 +147,7 @@ public class GameControllerTest {
 	}
 	
 	@Test
-	public void test_4_playMoveWithGameIDAndWithToLowActionCountShouldReturnBadRequestStatus() throws Exception
+	public void test_6_playMoveWithGameIDAndWithToLowActionCountShouldReturnBadRequestStatus() throws Exception
 	{
 	  mockMvc.perform( MockMvcRequestBuilders
 		      .put(BASE_URL  + "/play/{id}", 1)
@@ -98,7 +158,7 @@ public class GameControllerTest {
 	}
 	
 	@Test
-	public void test_5_deleteGameFromRepositorySholdReturnAcceptedStatus() throws Exception
+	public void test_7_deleteGameFromRepositorySholdReturnAcceptedStatus() throws Exception
 	{
 		  mockMvc.perform( MockMvcRequestBuilders
 			      .delete(BASE_URL  + "/delete/1")
@@ -107,7 +167,7 @@ public class GameControllerTest {
 	}
 	
 	@Test
-	public void test_6_deleteGameFromRepositoryWithIdThatShouldNotExistShouldReturnBadRequest() throws Exception
+	public void test_8_deleteGameFromRepositoryWithIdThatShouldNotExistShouldReturnBadRequest() throws Exception
 	{
 		  mockMvc.perform( MockMvcRequestBuilders
 			      .delete(BASE_URL  + "/delete/1")
@@ -115,4 +175,10 @@ public class GameControllerTest {
 			      .andExpect(status().isNotFound());
 	}
 
+
+	
+	private Game getMappedGameObject(MvcResult game) throws JsonParseException, JsonMappingException, IOException {
+		String contentAsString = game.getResponse().getContentAsString();
+		return objectMapper.readValue(contentAsString, Game.class);
+	}
 }

@@ -27,9 +27,10 @@ public class IGameRepositoryTest {
 	
 	@Before
 	public void beforeTestCreatGameAndSaveItToRepository() {
-        game.setFiguresCount(13);
-        game.setGameEngine(1);
-        game.setPlayer("Tester");
+		game.setInitialGameFiguresCount(13);
+		game.setGameEngine(1);
+		game.setPlayer("Tester");
+        
         
         gameRepository.save(game);
 	}

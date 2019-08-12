@@ -33,9 +33,9 @@ public class GameProviderService {
 		Game game = gameRepository.save(newGame);
 
 		if (newGame.getGameEngine() == 1)
-			setEngine(new NormalEngine());
+			this.gameEngine = new NormalEngine();
 		if (newGame.getGameEngine() == 2)
-			setEngine(new IntelligentEngine());
+			this.gameEngine = new IntelligentEngine();
 
 		LOG.info("User: {} has created new Game with ID: {} and with {}", game.getPlayer(), game.getGameId(), gameEngine.getEngineName());
 		return game;
@@ -53,7 +53,7 @@ public class GameProviderService {
 	public Game playMove(GameAction playerMove, Long id) throws GameNotFoundException, ResponseStatusException {
 		Game gameFound = findGameById(id);
 
-		if (gameFound.getFiguresCount() < playerMove.getActionCount())
+		if (gameFound.getCurrentGameFiguresCount() < playerMove.getActionCount())
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ActionCount is bigger then present figuresCount");
 
 		if (gameFound.getGameState() == EGameState.END)
@@ -72,7 +72,4 @@ public class GameProviderService {
 		return gameEngine;
 	}
 
-	public void setEngine(IGameEngine engine) {
-		this.gameEngine = engine;
-	}
 }
