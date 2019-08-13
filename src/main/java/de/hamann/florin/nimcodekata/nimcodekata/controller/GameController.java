@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.hamann.florin.nimcodekata.nimcodekata.model.Game;
 import de.hamann.florin.nimcodekata.nimcodekata.model.GameAction;
+import de.hamann.florin.nimcodekata.nimcodekata.model.NewGameUserInput;
 import de.hamann.florin.nimcodekata.nimcodekata.service.GameProviderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,17 +41,19 @@ public class GameController {
 	public String welcome() {
 		return "Willkomen zum Nim-Game. <a href='http://localhost:8080/swagger-ui.html'>Hier finden Sie eine Dokumentation für diese API</a>";
 	}
-	
+
 	@PostMapping("/post")
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation(value = "create and save new init game to jpa repositry", response = ResponseEntity.class)
-	Resource<Game> newGame(@Valid @RequestBody Game newGame) {
+	@ApiOperation(value = "create and save new init game to jpa repository", response = ResponseEntity.class)
+	Resource<Game> newGame(@Valid @RequestBody NewGameUserInput newGame) {
 
-	  Game game = gameProviderService.createAndSaveNewGame(newGame);
+		Game game = gameProviderService.createAndSaveNewGame(
+				new Game(newGame.getPlayer(), 
+						newGame.getFiguresCount(), 
+						newGame.getGameEngine()));
 
-	  return new Resource<>(game,
-	    linkTo(methodOn(GameController.class).newGame(game)).withRel("_self"),
-	    linkTo(methodOn(GameController.class).playMove(new GameAction(), game.getGameId())).withRel("play_move"));
+		return new Resource<Game>(game, linkTo(methodOn(GameController.class).newGame(newGame)).withRel("_self"),
+				linkTo(methodOn(GameController.class).playMove(new GameAction(), game.getGameId())).withRel("play_move"));
 	}
 
 	@GetMapping("/get/{id}")
@@ -58,9 +61,8 @@ public class GameController {
 	@ApiOperation(value = "find and search stored game by given id", response = ResponseEntity.class)
 	Resource<Game> find(@PathVariable Long id) {
 		Game game = gameProviderService.findGameById(id);
-		
-		return new Resource<Game>(game,
-				linkTo(methodOn(GameController.class).find(game.getGameId())).withRel("_self"),
+
+		return new Resource<Game>(game, linkTo(methodOn(GameController.class).find(game.getGameId())).withRel("_self"),
 				linkTo(methodOn(GameController.class).playMove(new GameAction(), game.getGameId())).withRel("play_move"));
 	}
 
@@ -69,9 +71,8 @@ public class GameController {
 	@ApiOperation(value = "find, search and update stored game by given gameAction", response = ResponseEntity.class)
 	Resource<Game> playMove(@RequestBody @Valid GameAction gameAction, @PathVariable Long id) {
 		Game game = gameProviderService.playMove(gameAction, id);
-		
-		return new Resource<>(game,
-				linkTo(methodOn(GameController.class).playMove(new GameAction(), game.getGameId())).withRel("_self"),
+
+		return new Resource<>(game, linkTo(methodOn(GameController.class).playMove(new GameAction(), game.getGameId())).withRel("_self"),
 				linkTo(methodOn(GameController.class).find(game.getGameId())).withRel("get_game"));
 	}
 
@@ -80,8 +81,8 @@ public class GameController {
 	@ApiOperation(value = "find and delete stored game by given id", response = ResponseEntity.class)
 	Resource<HttpStatus> deletGame(@PathVariable Long id) {
 		gameProviderService.deleteGameId(id);
-		
-		return new Resource<> (HttpStatus.ACCEPTED);
+
+		return new Resource<>(HttpStatus.ACCEPTED);
 	}
 
 }

@@ -38,8 +38,8 @@ public class GameControllerTest {
 	private final String GAME_ENGINE = "1";
 	private final String FIGURES_COUNT = "13";
 
-	private final String JSON_NEW_GAME = "{\"player\":\"" + PLAYER + "\",\"gameEngine\":\"" + GAME_ENGINE + "\",\"initialGameFiguresCount\":\"" + FIGURES_COUNT + "\"}";
-	private final String JSON_NEW_GAME_FIGURES_COUNT_2 = "{\"player\":\"" + PLAYER + "\",\"gameEngine\":\"" + GAME_ENGINE + "\",\"initialGameFiguresCount\":\"" + 2 + "\"}";
+	private final String JSON_NEW_GAME = "{\"player\":\"" + PLAYER + "\",\"gameEngine\":\"" + GAME_ENGINE + "\",\"figuresCount\":\"" + FIGURES_COUNT + "\"}";
+	private final String JSON_NEW_GAME_FIGURES_COUNT_2 = "{\"player\":\"" + PLAYER + "\",\"gameEngine\":\"" + GAME_ENGINE + "\",\"figuresCount\":\"" + 2 + "\"}";
 	private final String JSON_PLAY_GAME_WITH_ACTION_COUNT_1 =  "{\"actionCount\":\"1\"}";
 	private final String JSON_PLAY_GAME_WITH_ACTION_COUNT_2 =  "{\"actionCount\":\"2\"}";
 	private final String JSON_PLAY_GAME_WITH_TO_HIGHT_ACTION_COUNT =  "{\"actionCount\":\"4\"}";
