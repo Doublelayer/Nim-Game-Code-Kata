@@ -21,6 +21,10 @@ public class IntelligentEngine implements IGameEngine {
 		determineWinner(game);
 	}
 
+	/*
+	 * this is a pseudo implementation of a intelligent version 
+	 * fell free to contribute :-)
+	 */
 	@Override
 	public void setCpuMove(Game game) {
 		int move = ThreadLocalRandom.current().nextInt(2, 3);

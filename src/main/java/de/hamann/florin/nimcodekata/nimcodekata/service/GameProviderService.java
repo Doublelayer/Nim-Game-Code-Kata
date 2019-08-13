@@ -15,10 +15,8 @@ import de.hamann.florin.nimcodekata.nimcodekata.model.EGameState;
 import de.hamann.florin.nimcodekata.nimcodekata.model.Game;
 import de.hamann.florin.nimcodekata.nimcodekata.model.GameAction;
 import de.hamann.florin.nimcodekata.nimcodekata.repository.IGameRepository;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class GameProviderService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GameProviderService.class);
