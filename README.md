@@ -19,7 +19,7 @@
 
 3. The Rest API will start on Port 8080.
 
-> http://localhost:8080/api/v1/nim
+> http://localhost:8080/api/v1/nim/
 
 4. To test the api endpoints you can use the swagger ui under:  
 
